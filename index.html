@@ -1761,34 +1761,27 @@
 
             try {
                 // Step 1: Validasi URL & Inisialisasi Paket Data
-                updateProgress(25, "Menyiapkan...", "bg-amber-100 text-amber-800", "Menyiapkan paket data uji coba dan validasi URL...", "fa-circle-notch fa-spin text-amber-500");
+                updateProgress(25, "Menyiapkan...", "bg-amber-100 text-amber-800", "Memvalidasi URL yang dimasukkan...", "fa-circle-notch fa-spin text-amber-500");
                 await delay(400);
 
                 // Step 2: Menghubungkan ke Server Webhook
-                updateProgress(60, "Menghubungkan...", "bg-sky-100 text-sky-800", "Menghubungkan ke server Google Apps Script...", "fa-satellite-dish fa-spin text-sky-500");
+                updateProgress(60, "Menghubungkan...", "bg-sky-100 text-sky-800", "Melakukan Ping ke URL Webhook (tanpa mengirim data)...", "fa-satellite-dish fa-spin text-sky-500");
                 await delay(600);
 
-                // Step 3: Kirim data & Verifikasi
+                // Step 3: Kirim Ping (tanpa data via metode GET)
                 await fetch(url, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        type: "Pengujian Koneksi Webhook",
-                        memberName: "Uji Coba Sistem Kas",
-                        amount: 0,
-                        note: "Tes Koneksi dari Aplikasi Kas Digital"
-                    })
+                    method: 'GET',
+                    mode: 'no-cors'
                 });
 
                 await delay(400);
 
                 // Step 4: Selesai - Terkoneksi
-                updateProgress(100, "Terkoneksi ✓", "bg-emerald-100 text-emerald-800", "Berhasil terhubung! Sinyal tes telah dikirim ke Google Spreadsheet.", "fa-circle-check text-emerald-500");
-                showToast("Sinyal tes berhasil dikirim ke Google Spreadsheet! Periksa apakah ada baris baru di sheet Anda.", "success");
+                updateProgress(100, "Terkoneksi ✓", "bg-emerald-100 text-emerald-800", "Berhasil terhubung! URL Webhook valid dan dapat dijangkau.", "fa-circle-check text-emerald-500");
+                showToast("Ping berhasil! URL Webhook dapat dijangkau (tanpa mengirim data).", "success");
             } catch(err) {
-                updateProgress(100, "Gagal Koneksi", "bg-rose-100 text-rose-800", "Gagal terhubung ke Google Spreadsheet: " + err.message, "fa-circle-xmark text-rose-500");
-                showToast("Gagal mengirim sinyal tes: " + err.message, "error");
+                updateProgress(100, "Gagal Koneksi", "bg-rose-100 text-rose-800", "Gagal terhubung ke URL Webhook: " + err.message, "fa-circle-xmark text-rose-500");
+                showToast("Ping ke URL gagal: " + err.message, "error");
             } finally {
                 if (btn) {
                     btn.disabled = false;
